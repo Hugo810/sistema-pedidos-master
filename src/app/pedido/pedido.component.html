@@ -1,0 +1,144 @@
+<div class="container">
+  <h2>Gestão de Pedidos</h2>
+
+
+
+  <div>
+    <h2>Autenticação com Google</h2>
+    <iframe src="https://accounts.google.com/o/oauth2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=token&scope=https://www.googleapis.com/auth/calendar.events" sandbox="allow-same-origin allow-scripts"></iframe>
+  </div>
+
+  <a href="https://calendar.google.com" target="_blank">Abrir Google Calendar</a>
+<br><br>
+
+  <!-- Campo de Autocomplete para Cliente -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Cliente</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="clienteControl"
+      [matAutocomplete]="autoCliente"
+      placeholder="Digite o nome do cliente"
+    />
+    <mat-autocomplete
+      #autoCliente="matAutocomplete"
+      (optionSelected)="selecionarCliente($event.option.value)">
+      <mat-option *ngFor="let cliente of clientesFiltrados | async" [value]="cliente">
+        {{ cliente.nome }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <h4>Cliente Selecionado: {{ pedido.cliente.nome || 'Nenhum cliente selecionado' }}</h4>
+
+  <!-- Campo de Autocomplete para Produto -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Produto</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="produtoControl"
+      [matAutocomplete]="autoProduto"
+      placeholder="Digite o nome do produto"
+    />
+    <mat-autocomplete
+      #autoProduto="matAutocomplete"
+      (optionSelected)="selecionarProduto($event.option.value)">
+      <mat-option *ngFor="let produto of produtosFiltrados | async" [value]="produto">
+        {{ produto.nome }} - {{ produto.valor | currency:'BRL' }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <div class="form-group">
+    <h3>Adicionar Item ao Pedido</h3>
+
+    <mat-form-field appearance="fill" class="medium-width">
+      <mat-label>Nome do Produto</mat-label>
+      <input
+        type="text"
+        matInput
+        [(ngModel)]="novoItem.produtoServico.nome"
+        readonly
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="small-width">
+      <mat-label>Quantidade</mat-label>
+      <input
+        type="number"
+        matInput
+        [(ngModel)]="novoItem.qtdeItem"
+        min="1"
+        placeholder="Quantidade"
+      />
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="adicionarItem()">Adicionar Item</button>
+  </div>
+
+  <div class="form-group">
+    <h4>Itens do Pedido:</h4>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Quantidade</th>
+          <th>Valor Unitário</th>
+          <th>Valor Total</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of pedido.lista">
+          <td>{{ item.produtoServico.nome }}</td>
+          <td>{{ item.qtdeItem }}</td>
+          <td>{{ item.produtoServico.valor | currency }}</td>
+          <td>{{ item.produtoServico.valor * item.qtdeItem | currency }}</td>
+          <td>
+            <!-- <button mat-button color="warn" (click)="removerItem(item)">Remover</button> -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4>Valor Total: {{ pedido.valorTotal | currency }}</h4>
+  </div>
+
+  <div class="form-group">
+    <button mat-raised-button color="primary" (click)="adicionarPedido()">Adicionar Pedido</button>
+  </div>
+
+  <div *ngIf="adicionarPedido" class="success-message">
+    Pedido adicionado e evento criado na agenda!
+  </div>
+
+  <!-- Lista de Pedidos -->
+  <div class="form-group">
+    <h3>Lista de Pedidos</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Valor Total</th>
+          <th>Data do Serviço</th>
+          <th>Cliente</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pedido of pedidos">
+          <td>{{ pedido.codigo }}</td>
+          <td>{{ pedido.valorTotal | currency }}</td>
+          <td>{{ pedido.dataServico }}</td>
+          <td>{{ pedido.cliente.nome }}</td>
+          <td>
+            <!-- <button mat-button color="warn" (click)="deletarPedido(pedido.codigo)"> -->
+              Deletar
+            <!-- </button> -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

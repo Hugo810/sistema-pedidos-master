@@ -1,0 +1,41 @@
+<div class="container">
+  <h2>Gestão de Clientes</h2>
+
+  <!-- Formulário para Adicionar/Atualizar/Buscar Cliente por Código -->
+  <div *ngIf="cliente">
+    <div class="form-group">
+      <label for="codigo">Código:</label>
+      <input [(ngModel)]="cliente.codigo" id="codigo" type="number" class="form-control" class="form-control" required readonly />
+    </div>
+
+    <div class="form-group">
+      <label for="nome">Nome:</label>
+      <input [(ngModel)]="cliente.nome" id="nome" type="text" class="form-control" />
+    </div>
+    <br>
+    <button (click)="adicionarCliente()" class="btn btn-primary">Adicionar Cliente</button>
+    <button (click)="atualizarCliente()" class="btn btn-warning">Atualizar Cliente</button>
+    <button (click)="buscarClientePorCodigo()" class="btn btn-info">Buscar por Código</button>
+  </div>
+
+  <!-- Campo para Busca por Nome -->
+  <div class="form-group mt-4">
+    <label for="nomeBusca">Buscar Cliente por Nome:</label>
+    <input [(ngModel)]="buscanome" id="nomeBusca" type="text" placeholder="Digite o nome" class="form-control" />
+    <button (click)="buscarClientes()" class="btn btn-success mt-2">Buscar por Nome</button>
+  </div>
+
+  <!-- Lista de Clientes -->
+  <h3 class="mt-4">Lista de Clientes</h3>
+  <ul class="list-group">
+    <li *ngFor="let c of clientes" class="list-group-item d-flex justify-content-between align-items-center">
+      {{ c.codigo }} - {{ c.nome }}
+      <div>
+        <button (click)="selecionarCliente(c)" class="btn btn-secondary btn-sm me-2">Selecionar</button>
+        <button (click)="excluirCliente(c.codigo)" class="btn btn-danger btn-sm">Excluir</button>
+      </div>
+    </li>
+  </ul>
+
+  <p *ngIf="clientes.length === 0" class="text-muted mt-3">Nenhum cliente encontrado.</p>
+</div>
